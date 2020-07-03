@@ -33,7 +33,7 @@ var transactionApi = require('./app_api/routes/transaction');
 app.use('/api', transactionApi);
 
 
-app.use('/', express.static(path.join(__dirname, '__client/dist')));
+app.use('/', express.static(path.join(__dirname, 'app_client/dist')));
 
 
 /**

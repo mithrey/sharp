@@ -10,7 +10,7 @@ var auth = jwt({
 
 var ctrlTransaction = require('../controllers/transaction');
 
-
+router.get('/history', ctrlTransaction.getHistory);
 router.post('/pay', ctrlTransaction.pay);
 
 module.exports = router;
