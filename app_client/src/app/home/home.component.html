@@ -1,0 +1,23 @@
+﻿<h1>Hi {{currentUser.firstName}}!</h1>
+<h3>Transaction history:</h3>
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Type</th>
+        <th scope="col">Sender</th>
+        <th scope="col">Recipient</th>
+        <th scope="col">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let tr of transactions">
+        <th scope="row">{{tr.id}}</th>
+        <td>{{tr.sender == currentUser.id?'Credit':'Debit'}}</td>
+        <td>{{tr.sender}}</td>
+        <td>{{tr.recipient}}</td>
+        <td>{{tr.amount}}</td>
+      </tr>
+
+    </tbody>
+  </table>
