@@ -24,9 +24,13 @@ module.exports.getHistory = async function(req, res){
     }
 
     Transaction.findAll({
+        
         where:{
             [Op.or] : {sender: decoded._id, recipient: decoded._id}
-        }
+        },
+        order: [
+            ['createdAt', 'DESC'],
+        ]
     }).then( async tr => {
         for(let i = 0; i < tr.length; i++){
             let sender = await User.findOne({where:{id:tr[i].dataValues.sender}})

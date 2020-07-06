@@ -3,7 +3,7 @@
 <table class="table">
     <thead>
       <tr>
-        <th scope="col">#</th>
+        <th scope="col">Date</th>
         <th scope="col">Type</th>
         <th scope="col">Sender</th>
         <th scope="col">Recipient</th>
@@ -12,7 +12,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let tr of pageOfItems">
-        <th scope="row">{{tr.id}}</th>
+        <th scope="row">{{tr.createdAt | date:'dd:mm:yyyy hh:mm'}}</th>
         <td>{{tr.recipient == currentUser.id?'Credit':'Debit'}}</td>
         <td>{{tr.senderEmail}}</td>
         <td>{{tr.recipientEmail}}</td>
