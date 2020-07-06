@@ -2,7 +2,8 @@
 <form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
         <label for="recipient">Recipient</label>
-        <input type="text" formControlName="recipient" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.recipient.errors }" />
+        <input type="text" formControlName="recipient" class="form-control"  [ngClass]="{ 'is-invalid': submitted && f.recipient.errors }" />
+
         <div *ngIf="submitted && f.recipient.errors" class="invalid-feedback">
             <div *ngIf="f.recipient.errors.required">Recipient is required</div>
         </div>

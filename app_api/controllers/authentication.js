@@ -36,26 +36,32 @@ var sendJsonResponse = function(res, status, content){
     res.json(content);
 };
 
-module.exports.register = function (req, res) {
+module.exports.register = async function (req, res) {
     var email = req.body.email;
     var name = req.body.name;
     var password = req.body.password;
 
 
     if(!name || !password || !email){
-        sendJsonResponse(res, 400, {
+        return sendJsonResponse(res, 400, {
             code: 1000,
             "message": "fields 'name', 'email' and 'password' required"
         });
-        return;
     }
 
     if(!validateEmail(email)){
-        sendJsonResponse(res, 400, {
+        return sendJsonResponse(res, 400, {
             code: 1001,
             "message": "invalid email"
         });
-        return;
+        
+    }
+    var alreadyRegistered = await User.findOne({where:{email:email}});
+    if(alreadyRegistered){
+        return sendJsonResponse(res, 400, {
+            code: 1006,
+            "message": "email already registered"
+        });
     }
 
     var salt = crypto.randomBytes(16).toString('hex');
@@ -66,7 +72,7 @@ module.exports.register = function (req, res) {
         hash: setPassword(password, salt),
         balance: registrationBonus,
     };
-    console.log("userData", userData);
+    
     User.create(userData)
         .then(async user => {
             console.log("created", user);

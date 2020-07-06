@@ -8,7 +8,7 @@ const sequelize = new Sequelize('sharp', 'sharp', '123321', {
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 (async () => {
-    await sequelize.sync({ });
+    await sequelize.sync({  });
     // Code here
   })();
 module.exports = db;

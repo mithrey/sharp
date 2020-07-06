@@ -11,7 +11,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let tr of transactions">
+      <tr *ngFor="let tr of pageOfItems">
         <th scope="row">{{tr.id}}</th>
         <td>{{tr.recipient == currentUser.id?'Credit':'Debit'}}</td>
         <td>{{tr.senderEmail}}</td>
@@ -22,4 +22,18 @@
       </tr>
 
     </tbody>
+    <tfoot>
+      <div class="card-footer pb-0 pt-3">
+        <jw-pagination [items]="transactions" (changePage)="onChangePage($event)"></jw-pagination>
+    </div>
+    </tfoot>
   </table>
+  <!--<div class="card text-center m-3">
+    <h3 class="card-header">Angular 8 Pagination Example</h3>
+    <div class="card-body">
+        <div *ngFor="let item of pageOfItems">{{item.name}}</div>
+    </div>
+    <div class="card-footer pb-0 pt-3">
+        <jw-pagination [items]="transactions" (changePage)="onChangePage($event)"></jw-pagination>
+    </div>
+</div>-->

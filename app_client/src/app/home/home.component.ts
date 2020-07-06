@@ -8,8 +8,9 @@ import { Router } from '@angular/router';
 @Component({ templateUrl: 'home.component.html' })
 export class HomeComponent implements OnInit {
     currentUser: User;
-    users = [];
-    transactions = [];
+    transactions: Array<Transaction> = [];
+
+    pageOfItems: Array<Transaction>;
     socket: WebSocket;
     constructor(
         private authenticationService: AuthenticationService,
@@ -27,6 +28,11 @@ export class HomeComponent implements OnInit {
             .subscribe((data : Array<Transaction>) => this.transactions = data);
         this.handleSocket();
 
+    }
+
+    onChangePage(pageOfItems: Array<any>) {
+        // update current page of items
+        this.pageOfItems = pageOfItems;
     }
 
     copyTransaction(recipient: string, amount: number){

@@ -1,17 +1,18 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { first } from 'rxjs/operators';
+import { first, startWith, map } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User, Transaction } from '@/_models';
 import { UserService, AuthenticationService, TransactionService, AlertService } from '@/_services';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 
 @Component({ templateUrl: 'transaction.component.html' })
 export class TransactionComponent implements OnInit {
     currentUser: User;
     transactionForm: FormGroup;
     users = [];
-    recipients = [];
-    
+    recipients: Array<string> = [];
+    filtered: Observable<string[]>;
     constructor(
         private authenticationService: AuthenticationService,
         private userService: UserService,
@@ -35,18 +36,25 @@ export class TransactionComponent implements OnInit {
 
         this.userService.getAll()
         .pipe(first())
-        .subscribe((data : Array<User>) => this.recipients = data);
+        .subscribe((data : Array<string>) => this.recipients = data);
 
         
+        this.filtered = this.transactionForm.valueChanges.pipe(
+            startWith(''),
+            map(value => this._filter(value))
+          );
     }
 
     get f() { return this.transactionForm.controls; }
 
     private _filter(value: string): string[] {
-        const filterValue = value.toLowerCase();
+        const filterValue = this._normalizeValue(value);
+        return this.recipients.filter(street => this._normalizeValue(street).includes(filterValue));
+      }
     
-        return this.recipients.filter(option => option.toLowerCase().includes(filterValue));
-    }
+      private _normalizeValue(value: string): string {
+        return value.toLowerCase().replace(/\s/g, '');
+      }
 
     onSubmit() {
 

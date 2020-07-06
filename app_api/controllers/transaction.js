@@ -5,6 +5,7 @@ const Op = db.Sequelize.Op;
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const secret = 'thisIsSecret';
+const { sendMessage } = require('../../socket');
 
 var sendJsonResponse = function (res, status, content) {
     res.status(status);
@@ -19,15 +20,20 @@ module.exports.getHistory = async function(req, res){
     try {
         decoded = jwt.verify(authorization, secret);
     } catch (e) {
-        return sendJsonResponse(res, 400, 'JWT error');
+        return sendJsonResponse(res, 400, {code: 1020, message: 'JWT error'});
     }
 
     Transaction.findAll({
         where:{
             [Op.or] : {sender: decoded._id, recipient: decoded._id}
         }
-    }).then(tr => {
-        console.log('trs!', tr.map(x => x.dataValues));
+    }).then( async tr => {
+        for(let i = 0; i < tr.length; i++){
+            let sender = await User.findOne({where:{id:tr[i].dataValues.sender}})
+            tr[i].dataValues.senderEmail = sender.dataValues.email;
+            let recipient = await User.findOne({where:{id:tr[i].dataValues.recipient}})
+            tr[i].dataValues.recipientEmail = recipient.dataValues.email;
+        }
         sendJsonResponse(res, 200, tr.map(x => x.dataValues));
     }).catch(e => {
         console.log('error', e);
@@ -43,7 +49,7 @@ module.exports.pay = async function (req, res) {
     try {
         decoded = jwt.verify(authorization, secret);
     } catch (e) {
-        return sendJsonResponse(res, 400, 'JWT error');
+        return sendJsonResponse(res, 400, {code: 1020, message: 'JWT error'});
     }
     
     var sender = await User.findOne({
@@ -52,9 +58,15 @@ module.exports.pay = async function (req, res) {
         }
     });
     var senderBalance = sender.dataValues.balance;
-
+    if(sender.dataValues.email == recipient){
+        return sendJsonResponse(res, 400, {code: 1013, message: 'Invalid email'});
+    }
     if(senderBalance < amount){
         return sendJsonResponse(res, 400, {code: 1010, message: 'Not sufficient funds'});
+    }
+
+    if(amount <= 0){
+        return sendJsonResponse(res, 400, {code: 1010, message: 'Amount should be greater than 0'});
     }
 
     var recipient = await User.findOne({
@@ -90,6 +102,7 @@ module.exports.pay = async function (req, res) {
         return sendJsonResponse(res, 400, {code: 1012, message: 'transaction error'});
 
     }
+    sendMessage(sender.dataValues.id, recipient.dataValues.id);
 
     sendJsonResponse(res, 200, 'success');
 };
