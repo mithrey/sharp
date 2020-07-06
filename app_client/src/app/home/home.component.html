@@ -1,4 +1,4 @@
-﻿<h1>Hi {{currentUser.firstName}}!</h1>
+﻿<h1>Hi {{currentUser.name}}!</h1>
 <h3>Transaction history:</h3>
 <table class="table">
     <thead>
@@ -13,10 +13,12 @@
     <tbody>
       <tr *ngFor="let tr of transactions">
         <th scope="row">{{tr.id}}</th>
-        <td>{{tr.sender == currentUser.id?'Credit':'Debit'}}</td>
-        <td>{{tr.sender}}</td>
-        <td>{{tr.recipient}}</td>
+        <td>{{tr.recipient == currentUser.id?'Credit':'Debit'}}</td>
+        <td>{{tr.senderEmail}}</td>
+        <td>{{tr.recipientEmail}}</td>
         <td>{{tr.amount}}</td>
+        
+        <td><a  *ngIf="tr.recipient != currentUser.id" (click)="copyTransaction(tr.recipientEmail, tr.amount)" class="btn btn-link">Copy</a></td>
       </tr>
 
     </tbody>

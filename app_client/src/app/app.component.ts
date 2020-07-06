@@ -1,10 +1,11 @@
 ﻿import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthenticationService } from './_services';
+import { AuthenticationService, UserService } from './_services';
 import { User } from './_models';
 
 import './_content/app.less';
+import { first } from 'rxjs/internal/operators/first';
 
 @Component({ selector: 'app', templateUrl: 'app.component.html' })
 export class AppComponent {
@@ -12,9 +13,13 @@ export class AppComponent {
 
     constructor(
         private router: Router,
-        private authenticationService: AuthenticationService
+        private authenticationService: AuthenticationService,
+        private userService: UserService
     ) {
         this.authenticationService.currentUser.subscribe(x => this.currentUser = x);
+        this.userService.getBalance()
+            .pipe(first())
+            .subscribe((balance : number) => this.currentUser.balance = balance);
     }
 
     logout() {

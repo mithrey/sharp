@@ -1,0 +1,26 @@
+﻿<h2>Register</h2>
+<form [formGroup]="transactionForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+        <label for="recipient">Recipient</label>
+        <input type="text" formControlName="recipient" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.recipient.errors }" />
+        <div *ngIf="submitted && f.recipient.errors" class="invalid-feedback">
+            <div *ngIf="f.recipient.errors.required">Recipient is required</div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label for="amount">Amount</label>
+        <input type="amount" formControlName="amount" class="form-control" [ngClass]="{ 'is-invalid': submitted && f.amount.errors }" />
+        <div *ngIf="submitted && f.amount.errors" class="invalid-feedback">
+            <div *ngIf="f.amount.errors.required">Amount is required</div>
+            <div *ngIf="f.amount.errors.max">Amount can't be greater than your balance</div>
+            <div *ngIf="f.amount.errors.required">Amount should be greater than 0</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <button [disabled]="loading" class="btn btn-primary">
+            <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+            Transfer money
+        </button>
+    </div>
+</form>

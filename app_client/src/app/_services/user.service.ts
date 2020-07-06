@@ -8,7 +8,7 @@ export class UserService {
     constructor(private http: HttpClient) { }
 
     getAll() {
-        return this.http.get<User[]>(`${config.apiUrl}/users`);
+        return this.http.get<User[]>('/api/users');
     }
 
     register(user: User) {
@@ -17,5 +17,9 @@ export class UserService {
 
     delete(id: number) {
         return this.http.delete(`${config.apiUrl}/users/${id}`);
+    }
+
+    getBalance(){
+        return this.http.get('/api/user/balance');
     }
 }
