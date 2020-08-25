@@ -7,21 +7,21 @@ const jwt = require('jsonwebtoken');
 
 
 
-var validateEmail = function (email) {
+const validateEmail = function (email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
 }
 
 
-var setPassword = function(password, salt){
-    var hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+const setPassword = function(password, salt){
+    let hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
     return hash;
 };
 
 
 
-var generateJwt = function(name, id){
-    var expiry = new Date();
+const generateJwt = function(name, id){
+    let expiry = new Date();
     expiry.setDate(expiry.getDate() + 7);
     return jwt.sign({
         _id: id,
@@ -31,15 +31,15 @@ var generateJwt = function(name, id){
 };
 
 
-var sendJsonResponse = function(res, status, content){
+const sendJsonResponse = function(res, status, content){
     res.status(status);
     res.json(content);
 };
 
 module.exports.register = async function (req, res) {
-    var email = req.body.email;
-    var name = req.body.name;
-    var password = req.body.password;
+    let email = req.body.email;
+    let name = req.body.name;
+    let password = req.body.password;
 
 
     if(!name || !password || !email){
@@ -56,7 +56,7 @@ module.exports.register = async function (req, res) {
         });
         
     }
-    var alreadyRegistered = await User.findOne({where:{email:email}});
+    let alreadyRegistered = await User.findOne({where:{email:email}});
     if(alreadyRegistered){
         return sendJsonResponse(res, 400, {
             code: 1006,
@@ -64,8 +64,8 @@ module.exports.register = async function (req, res) {
         });
     }
 
-    var salt = crypto.randomBytes(16).toString('hex');
-    var userData = {
+    let salt = crypto.randomBytes(16).toString('hex');
+    let userData = {
         name: name,
         email: email,
         salt: salt,
@@ -76,7 +76,7 @@ module.exports.register = async function (req, res) {
     User.create(userData)
         .then(async user => {
             console.log("created", user);
-            var trObject = {
+            let trObject = {
                 sender: -1,
                 recipient: user.id,
                 amount: registrationBonus
@@ -101,7 +101,7 @@ module.exports.login = function (req, res) {
 
 
     passport.authenticate('local',{}, function (err, user, info) {
-       var token;
+       let token;
 
        console.log('req', user);
        if(err){

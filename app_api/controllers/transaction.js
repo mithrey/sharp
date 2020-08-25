@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const secret = 'thisIsSecret';
 const { sendMessage } = require('../../socket');
 
-var sendJsonResponse = function (res, status, content) {
+const sendJsonResponse = function (res, status, content) {
     res.status(status);
     res.json(content);
 };
@@ -15,7 +15,7 @@ var sendJsonResponse = function (res, status, content) {
 
 
 module.exports.getHistory = async function(req, res){
-    var authorization = req.headers.authorization.split(' ')[1],
+    let authorization = req.headers.authorization.split(' ')[1],
     decoded;
     try {
         decoded = jwt.verify(authorization, secret);
@@ -46,9 +46,9 @@ module.exports.getHistory = async function(req, res){
 }
 
 module.exports.pay = async function (req, res) {
-    var email = req.body.recipient;
-    var amount = req.body.amount;
-    var authorization = req.headers.authorization.split(' ')[1],
+    let email = req.body.recipient;
+    let amount = req.body.amount;
+    let authorization = req.headers.authorization.split(' ')[1],
     decoded;
     try {
         decoded = jwt.verify(authorization, secret);
@@ -56,12 +56,12 @@ module.exports.pay = async function (req, res) {
         return sendJsonResponse(res, 400, {code: 1020, message: 'JWT error'});
     }
     
-    var sender = await User.findOne({
+    let sender = await User.findOne({
         where:{
             id: decoded._id
         }
     });
-    var senderBalance = sender.dataValues.balance;
+    let senderBalance = sender.dataValues.balance;
     if(sender.dataValues.email == recipient){
         return sendJsonResponse(res, 400, {code: 1013, message: 'Invalid email'});
     }
@@ -73,7 +73,7 @@ module.exports.pay = async function (req, res) {
         return sendJsonResponse(res, 400, {code: 1010, message: 'Amount should be greater than 0'});
     }
 
-    var recipient = await User.findOne({
+    let recipient = await User.findOne({
         where:{
             email: email
         }
@@ -82,12 +82,12 @@ module.exports.pay = async function (req, res) {
     if(!recipient){
         return sendJsonResponse(res, 400, {code: 1011, message: 'Invalid recipient'});
     }
-    var recipientBalance = recipient.dataValues.balance;
+    let recipientBalance = recipient.dataValues.balance;
 
     const t = await db.sequelize.transaction();
 
     try {
-        var trObject = {
+        let trObject = {
             sender: sender.dataValues.id,
             recipient: recipient.dataValues.id,
             amount: amount

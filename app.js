@@ -32,13 +32,13 @@ require('./socket').handle(expressWs, app);
  * HTTP routing -- begin
  */
 
-var authApi = require('./app_api/routes/authentication');
+const authApi = require('./app_api/routes/authentication');
 app.use('/api', authApi);
 
-var transactionApi = require('./app_api/routes/transaction');
+const transactionApi = require('./app_api/routes/transaction');
 app.use('/api', transactionApi);
 
-var userApi = require('./app_api/routes/user');
+const userApi = require('./app_api/routes/user');
 app.use('/api', userApi);
 
 app.use('/', express.static(path.join(__dirname, 'app_client/dist')));

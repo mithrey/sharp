@@ -1,14 +1,14 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var jwt = require('express-jwt');
+const jwt = require('express-jwt');
 
-var auth = jwt({
+const auth = jwt({
     secret: 'thisIsSecret',
     _userProperty: 'payload'
 });
 
-var ctrlTransaction = require('../controllers/transaction');
+const ctrlTransaction = require('../controllers/transaction');
 
 router.get('/history', ctrlTransaction.getHistory);
 router.post('/pay', ctrlTransaction.pay);
